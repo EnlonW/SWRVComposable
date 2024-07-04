@@ -1,0 +1,39 @@
+{
+  "name": "swr",
+  "version": "0.0.1",
+  "description": "Vue Hooks library for data fetching",
+  "keywords": [
+    "vue",
+    "hooks",
+    "swr",
+    "fetching",
+    "data"
+  ],
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "bunchee"
+  },
+  "peerDependencies": {
+    "vue": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "bunchee": "latest",
+    "vue": "latest"
+  },
+  "dependencies": {
+    "stable-hash": "^0.0.4"
+  }
+}
