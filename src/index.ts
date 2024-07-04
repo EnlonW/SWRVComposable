@@ -1,3 +1,3 @@
-import { useSWR } from "./use-swr"
+import useSWR from "./use-swr"
 
 export default useSWR

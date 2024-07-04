@@ -1,11 +1,11 @@
-import { defineConfig } from "../config"
+import { defaultConfig } from "./config"
 import type { Fetcher, Key, Options } from "../types"
 import { mergeConfigs } from "./merge-configs"
 
-export function normalizeArgs<Data = any, Error = any>(...args: any[]): [Key, Fetcher<Data> | null, Options<Data, Error>] {
+export function normalizeArgs<Data = any, Error = any>(args: any[]): [Key, Fetcher<Data> | null, Options<Data, Error>] {
   const key: Key = args[0]
   let fetcher: Fetcher<Data> | null = null
-  let options: Options<Data, Error> = defineConfig
+  let options: Options<Data, Error> = defaultConfig
 
   if (args.length >= 2) {
     if (typeof args[1] === 'function') {

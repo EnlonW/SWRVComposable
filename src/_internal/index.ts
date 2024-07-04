@@ -1,4 +1,7 @@
+export { defaultConfig } from "./config"
 export { mergeConfigs } from "./merge-configs"
 export { normalizeArgs } from "./normalize-args"
+export { withArgs } from "./resolve-args"
 export { serialize } from "./serialize"
+export { useSWRConfig } from "./use-swr-config"
 export * from "./shared"

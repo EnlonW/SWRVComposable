@@ -2,6 +2,7 @@
   "name": "swr",
   "version": "0.0.1",
   "description": "Vue Hooks library for data fetching",
+  "packageManager": "pnpm@9.4.0",
   "keywords": [
     "vue",
     "hooks",

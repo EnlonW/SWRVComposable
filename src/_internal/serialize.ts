@@ -1,5 +1,5 @@
 import stableHash from "stable-hash"
-import { isFunction } from "./shared"
+import { isFunction } from "."
 import type { Arguments, Key } from "../types"
 
 // From https://github.com/vercel/swr/blob/main/src/_internal/utils/serialize.ts
