@@ -1,5 +1,4 @@
 import type { Ref, WatchSource } from 'vue'
-import type * as revalidateEvents from './_internal/events'
 
 export type State<Data = any, Error = any> = {
   data?: Data
@@ -16,7 +15,7 @@ export type Arguments =
   | null
   | undefined
   | false
-export type Key = Arguments | WatchSource<Arguments>
+export type SWRKey = Arguments | WatchSource<Arguments>
 
 export type Fetcher<Data> = (...args: any) => Data | Promise<Data>
 
@@ -35,7 +34,11 @@ export interface RevalidatorOptions {
 
 export type Revalidator = (revalidateOpts?: RevalidatorOptions | undefined) => void | Promise<boolean>
 
-export interface Options<Data = any, Error = any> {
+export interface PrivateConfiguration {
+  cache: Cache<any>
+}
+
+export interface PublicConfiguration<Data = any, Error = any> {
   fetcher?: Fetcher<Data>,
   /**
    * @defaultValue true
@@ -86,43 +89,31 @@ export interface Options<Data = any, Error = any> {
    * @defaultValue false
    */
   keepPreviousData: boolean
-  onLoadingSlow: (key: string, config: Readonly<Options<Data, Error>>) => void
-  onSuccess: (data: Data, key: string, config: Readonly<Options<Data, Error>>) => void
-  onError: (err: Error, key: string, config: Readonly<Options<Data, Error>>) => void
-  onErrorRetry: (err: Error, key: string, config: Readonly<Options<Data, Error>>, revalidate: Revalidator, revalidateOpts: Required<RevalidatorOptions>) => void
+  onLoadingSlow: (key: string, config: Readonly<SWRConfig<Data, Error>>) => void
+  onSuccess: (data: Data, key: string, config: Readonly<SWRConfig<Data, Error>>) => void
+  onError: (err: Error, key: string, config: Readonly<SWRConfig<Data, Error>>) => void
+  onErrorRetry: (err: Error, key: string, config: Readonly<SWRConfig<Data, Error>>, revalidate: Revalidator, revalidateOpts: Required<RevalidatorOptions>) => void
   onDiscarded: (key: string) => void
+  compare: (a: Data | undefined, b: Data | undefined) => boolean
 
   isVisible: () => boolean
   isOnline: () => boolean
 }
 
-export interface Cache<Data> {
-  get(key: string): Data | undefined
-  set(key: string, value: Data): void
-  delete(key: string): void
+export type SWRConfig<Data = any, Error = any> = PublicConfiguration<Data, Error> & {
+  provider?: (cache: Readonly<Cache>) => Cache
+}
+
+export interface Cache<Data = any> {
   keys(): IterableIterator<string>
+  get(key: string): State<Data> | undefined
+  set(key: string, value: State<Data>): void
+  delete(key: string): void
 }
 
 export interface SWRHook {
-  <Data = any, Error = any>(key: Key): SWRResponse<Data, Error>
-  <Data = any, Error = any>(key: Key, fetcher: Fetcher<Data> | null): SWRResponse<Data, Error>
-  <Data = any, Error = any>(key: Key, options: Partial<Options<Data, Error>>): SWRResponse<Data, Error>
-  <Data = any, Error = any>(key: Key, fetcher: Fetcher<Data> | null, options: Partial<Options<Data, Error>>): SWRResponse<Data, Error>
+  <Data = any, Error = any>(key: SWRKey): SWRResponse<Data, Error>
+  <Data = any, Error = any>(key: SWRKey, fetcher: Fetcher<Data> | null): SWRResponse<Data, Error>
+  <Data = any, Error = any>(key: SWRKey, options: Partial<PublicConfiguration<Data, Error>>): SWRResponse<Data, Error>
+  <Data = any, Error = any>(key: SWRKey, fetcher: Fetcher<Data> | null, options: Partial<PublicConfiguration<Data, Error>>): SWRResponse<Data, Error>
 }
-
-
-export type RevalidateEvent =
-  | typeof revalidateEvents.FOCUS_EVENT
-  | typeof revalidateEvents.RECONNECT_EVENT
-  | typeof revalidateEvents.MUTATE_EVENT
-  | typeof revalidateEvents.ERROR_REVALIDATE_EVENT
-type RevalidateCallbackReturnType = {
-  [revalidateEvents.FOCUS_EVENT]: void
-  [revalidateEvents.RECONNECT_EVENT]: void
-  [revalidateEvents.MUTATE_EVENT]: Promise<boolean>
-  [revalidateEvents.ERROR_REVALIDATE_EVENT]: void
-}
-export type RevalidateCallback = <K extends RevalidateEvent>(
-  type: K,
-  opts?: any
-) => RevalidateCallbackReturnType[K]

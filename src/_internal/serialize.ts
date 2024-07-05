@@ -1,9 +1,9 @@
 import stableHash from "stable-hash"
-import { isFunction } from "."
-import type { Arguments, Key } from "../types"
+import type { Arguments, SWRKey } from "../types"
+import { isFunction } from "./shared"
 
 // From https://github.com/vercel/swr/blob/main/src/_internal/utils/serialize.ts
-export const serialize = (key: Key): [string, Arguments] => {
+export const serialize = (key: SWRKey): [string, Arguments] => {
   if (isFunction(key)) {
     try {
       key = key()

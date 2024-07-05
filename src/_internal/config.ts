@@ -1,10 +1,10 @@
 import { isUndefined, mergeObjects, noop } from "./shared";
-import type { Options, Revalidator, RevalidatorOptions } from "../types";
+import type { SWRConfig, Revalidator, RevalidatorOptions } from "../types";
 
 const onErrorRetry = (
   _: unknown,
   __: string,
-  config: Readonly<Options>,
+  config: Readonly<SWRConfig>,
   revalidate: Revalidator,
   opts: Required<RevalidatorOptions>
 ): void => {
@@ -25,7 +25,10 @@ const onErrorRetry = (
   setTimeout(revalidate, timeout, opts)
 }
 
-export const defaultConfig: Options = mergeObjects(
+// TODO: 
+const slowConnection = false
+
+export const defaultConfig: SWRConfig = mergeObjects(
   {
     // event
     onLoadingSlow: noop,
@@ -34,19 +37,24 @@ export const defaultConfig: Options = mergeObjects(
     onErrorRetry,
     onDiscarded: noop,
 
-    revalidateIfStale: true,
+    // switches
     revalidateOnFocus: true,
     revalidateOnReconnect: true,
-    refreshInterval: 0,
-    refreshWhenHidden: false,
+    revalidateIfStale: true,
     shouldRetryOnError: true,
-    dedupingInterval: 5000,
-    focusThrottleInterval: 5000,
-    loadingTimeout: 3000,
-    errorRetryInterval: 5000,
-    errorRetryCount: 3,
-    keepPreviousData: false,
-    fallback: {},
+
+    // timeouts
+    errorRetryInterval: slowConnection ? 10000 : 5000,
+    focusThrottleInterval: 5 * 1000,
+    dedupingInterval: 2 * 1000,
+    loadingTimeout: slowConnection ? 5000 : 3000,
+
+    // providers
+    compare: (a: any, b: any) => a === b,
+    isPaused: () => false,
+    cache: new Map(),
+    // mutate,
+    fallback: {}
   },
   {
     isOnline: () => true,

@@ -1,9 +1,15 @@
-import { inject } from "vue"
-import { mergeObjects, defaultConfig } from "."
-import type { Options } from "../types"
+import { inject, provide } from "vue"
+import { mergeObjects } from "./shared"
+import { defaultConfig } from "./config"
+import type { SWRConfig } from "../types"
 
-const SWRConfigContext = Symbol('SWRConfigContext')
+export const SWRConfigContext = Symbol('SWRConfigContext')
+
+export const useProvideSWRConfig = (config: Partial<SWRConfig>) => {
+  provide(SWRConfigContext, config)
+}
+
 export const useSWRConfig = () => {
-  const context = inject<Options>(SWRConfigContext)
+  const context = inject<Partial<SWRConfig>>(SWRConfigContext, {})
   return mergeObjects(defaultConfig, context)
 }

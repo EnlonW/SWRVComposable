@@ -1,5 +1,5 @@
 {
-  "name": "swr",
+  "name": "vue-swr-query",
   "version": "0.0.1",
   "description": "Vue Hooks library for data fetching",
   "packageManager": "pnpm@9.4.0",
@@ -8,7 +8,8 @@
     "hooks",
     "swr",
     "fetching",
-    "data"
+    "data",
+    "query"
   ],
   "main": "./dist/index.js",
   "exports": {
