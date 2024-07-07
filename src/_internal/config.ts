@@ -1,5 +1,6 @@
 import { isUndefined, mergeObjects, noop } from "./shared";
 import type { SWRConfig, Revalidator, RevalidatorOptions } from "../types";
+import { initCache } from "./cache";
 
 const onErrorRetry = (
   _: unknown,
@@ -24,6 +25,8 @@ const onErrorRetry = (
 
   setTimeout(revalidate, timeout, opts)
 }
+
+const [cache] = initCache(new Map())
 
 // TODO: 
 const slowConnection = false
@@ -50,10 +53,10 @@ export const defaultConfig: SWRConfig = mergeObjects(
     loadingTimeout: slowConnection ? 5000 : 3000,
 
     // providers
-    compare: (a: any, b: any) => a === b,
+    compare: (a: any | undefined, b: any | undefined) => a === b,
     isPaused: () => false,
-    cache: new Map(),
-    // mutate,
+    cache,
+    mutate: noop,
     fallback: {}
   },
   {

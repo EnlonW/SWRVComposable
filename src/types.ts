@@ -1,4 +1,4 @@
-import type { Ref, WatchSource } from 'vue'
+import type { Ref } from 'vue'
 
 export type State<Data = any, Error = any> = {
   data?: Data
@@ -15,7 +15,7 @@ export type Arguments =
   | null
   | undefined
   | false
-export type SWRKey = Arguments | WatchSource<Arguments>
+export type SWRKey = Arguments
 
 export type Fetcher<Data> = (...args: any) => Data | Promise<Data>
 
@@ -24,7 +24,7 @@ export type SWRResponse<Data = any, Error = any> = {
   error: Ref<Error | undefined>
   isValidating: Ref<boolean>
   isLoading: Ref<boolean>
-  mutate: (data: Data) => Promise<Data>
+  mutate: (data?: Data) => Promise<Data>
 }
 
 export interface RevalidatorOptions {
@@ -84,7 +84,7 @@ export interface PublicConfiguration<Data = any, Error = any> {
   errorRetryInterval: number
   errorRetryCount?: number
   fallback: { [key: string]: any }
-  fallbackData?: Data | Promise<Data>
+  fallbackData?: Data
   /**
    * @defaultValue false
    */

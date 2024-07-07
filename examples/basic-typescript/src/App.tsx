@@ -1,19 +1,20 @@
-import { defineComponent, onMounted, ref, toValue } from "vue";
+import { defineComponent } from "vue";
 import useSWR from "swr"
 
 export const App = defineComponent({
   setup() {
-    const b = ref(1)
-    const key = () => ['/api', b.value]
-    const { data, error, } = useSWR(key)
+    const fetcher = (url: string) => fetch(url).then(res => res.json())
+    const { data, error, isLoading } = useSWR('/api/user/123', fetcher)
 
-    onMounted(() => {
-      b.value = 2
-    })
-    return () => (
-      <div>
-        <h1>Hello, world!</h1>
-      </div>
-    )
+    return {
+      data,
+      error,
+      isLoading
+    }
+  },
+  render() {
+    if (this.error) return <div>failed to load</div>
+    if (this.isLoading) return <div>loading...</div>
+    return <div>hello {this.data.name}</div>
   }
 })
